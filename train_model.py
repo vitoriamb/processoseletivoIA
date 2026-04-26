@@ -2,9 +2,10 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
+# ── Dados ──────────────────────────────────────────────────────────────────────
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
 x_train = x_train.astype("float32") / 255.0
@@ -16,7 +17,7 @@ x_test  = x_test.reshape(-1, 28, 28, 1)
 print("Treino:", x_train.shape, y_train.shape)
 print("Teste: ", x_test.shape,  y_test.shape)
 
-
+# ── Arquitetura ────────────────────────────────────────────────────────────────
 model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(8, (3, 3), activation="relu", input_shape=(28, 28, 1)),
     tf.keras.layers.MaxPooling2D((2, 2)),
@@ -35,7 +36,7 @@ model.compile(
 
 model.summary()
 
-
+# ── Treino ─────────────────────────────────────────────────────────────────────
 history = model.fit(
     x_train, y_train,
     epochs=5,
@@ -44,6 +45,7 @@ history = model.fit(
     verbose=1,
 )
 
+# ── Avaliação ──────────────────────────────────────────────────────────────────
 loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
 
 y_pred = np.argmax(model.predict(x_test, verbose=0), axis=1)
@@ -64,9 +66,4 @@ print("=" * 55)
 total_params = model.count_params()
 print(f"\n  Parâmetros totais  : {total_params:,}")
 print(f"  Modelo adequado para Edge AI: sim" if total_params < 50_000
-      else f"  Atenção: {total_params:,} parâmetros podem ser pesados para Edge AI")
-print()
-
-
-model.save("model.h5")
-print("Modelo salvo em: model.h5")
+      else f"  Atenção:
